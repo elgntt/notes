@@ -29,3 +29,15 @@ func (r *Repo) CreateNote(ctx context.Context, note model.Note) error {
 
 	return nil
 }
+
+func (r *Repo) UpdateNote(ctx context.Context, note model.Note) error {
+	_, err := r.pool.Exec(ctx,
+		` UPDATE notes 
+ 			SET text = $1
+				WHERE id = $2`, note.Text, note.Id)
+	if err != nil {
+		return fmt.Errorf(`SQL: update note:%w`, err)
+	}
+
+	return nil
+}

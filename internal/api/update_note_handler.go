@@ -11,31 +11,33 @@ import (
 	response "github.com/elgntt/notes/internal/pkg/http"
 )
 
-type CreateNoteData struct {
+type UpdateNoteData struct {
+	Id   int    `json:"id"`
 	Text string `json:"text"`
 }
 
-func (h *Handler) CreateNote(c *gin.Context) {
-	data := CreateNoteData{}
+func (h *Handler) UpdateNote(c *gin.Context) {
+	data := UpdateNoteData{}
 
 	if err := c.BindJSON(&data); err != nil {
 		response.WriteErrorResponse(c, h.logger, err)
 		return
 	}
 
-	err := checkCreateRequestData(data)
+	err := checkUpdateRequestData(data)
 	if err != nil {
 		response.WriteErrorResponse(c, h.logger, err)
 		return
 	}
 
 	note := model.Note{
+		Id:   data.Id,
 		Text: data.Text,
 	}
 
 	ctx := context.Background()
 
-	err = h.noteService.CreateNote(ctx, note)
+	err = h.noteService.UpdateNote(ctx, note)
 	if err != nil {
 		response.WriteErrorResponse(c, h.logger, err)
 		return
@@ -44,7 +46,10 @@ func (h *Handler) CreateNote(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func checkCreateRequestData(data CreateNoteData) error {
+func checkUpdateRequestData(data UpdateNoteData) error {
+	if data.Id == 0 {
+		return businessErr.NewBusinessError(noteIsEmptyErr)
+	}
 	if data.Text == "" {
 		return businessErr.NewBusinessError(noteIsEmptyErr)
 	}
