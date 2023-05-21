@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	CreateNote(ctx context.Context, note model.Note) error
 	UpdateNote(ctx context.Context, note model.Note) error
+	DeleteNote(ctx context.Context, noteId int) error
 }
 
 type Service struct {
@@ -27,4 +28,8 @@ func (s *Service) CreateNote(ctx context.Context, note model.Note) error {
 
 func (s *Service) UpdateNote(ctx context.Context, note model.Note) error {
 	return s.repo.UpdateNote(ctx, note)
+}
+
+func (s *Service) DeleteNote(ctx context.Context, noteId int) error {
+	return s.repo.DeleteNote(ctx, noteId)
 }

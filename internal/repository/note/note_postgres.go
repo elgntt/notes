@@ -41,3 +41,15 @@ func (r *Repo) UpdateNote(ctx context.Context, note model.Note) error {
 
 	return nil
 }
+
+func (r *Repo) DeleteNote(ctx context.Context, noteId int) error {
+	_, err := r.pool.Exec(ctx,
+		` DELETE 
+ 			FROM notes
+ 			WHERE id = $1`, noteId)
+	if err != nil {
+		return fmt.Errorf(`SQL: delete note:%w`, err)
+	}
+
+	return nil
+}

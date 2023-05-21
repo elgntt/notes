@@ -38,5 +38,4 @@ func main() {
 	)
 
 	log.Fatal(r.Run(cfg.ServerPort))
-
 }
