@@ -58,7 +58,10 @@ func (r *Repo) DeleteNote(ctx context.Context, noteId int) error {
 
 func (r *Repo) GetAllNotes(ctx context.Context) ([]model.NoteInfo, error) {
 	rows, err := r.pool.Query(ctx,
-		` SELECT * FROM notes`)
+		` SELECT 
+     			id, 
+     			text 
+ 			FROM notes`)
 
 	if err != nil {
 		return nil, fmt.Errorf(`SQL: get all notes:%w`, err)
@@ -82,7 +85,9 @@ func (r *Repo) GetAllNotes(ctx context.Context) ([]model.NoteInfo, error) {
 
 func (r *Repo) GetNote(ctx context.Context, noteId int) (*model.NoteInfo, error) {
 	row := r.pool.QueryRow(ctx,
-		` SELECT * 
+		` SELECT 
+     			id,
+     			text
 			FROM notes
 			WHERE id = $1`, noteId)
 
