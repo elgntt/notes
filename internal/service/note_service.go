@@ -42,7 +42,7 @@ func (s *Service) UpdateNote(ctx context.Context, data model.Note) error {
 	if note == nil {
 		return businessErr.NewBusinessError(noteNotExistsErr)
 	}
-	
+
 	return s.repo.UpdateNote(ctx, data)
 }
 
