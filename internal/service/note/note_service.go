@@ -1,4 +1,4 @@
-package service
+package note
 
 import (
 	"context"

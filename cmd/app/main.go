@@ -8,8 +8,8 @@ import (
 	"github.com/elgntt/notes/internal/config"
 	"github.com/elgntt/notes/internal/pkg/db"
 	"github.com/elgntt/notes/internal/pkg/logger"
-	"github.com/elgntt/notes/internal/repository/note"
-	"github.com/elgntt/notes/internal/service"
+	"github.com/elgntt/notes/internal/repository/note/postgres"
+	note2 "github.com/elgntt/notes/internal/service/note"
 )
 
 func main() {
@@ -31,8 +31,8 @@ func main() {
 	}
 
 	r := api.New(
-		service.New(
-			note.New(pool),
+		note2.New(
+			postgres.New(pool),
 		),
 		logger,
 	)
