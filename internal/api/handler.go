@@ -43,13 +43,13 @@ func New(noteService NoteService, logger Logger) *gin.Engine {
 
 	r := gin.New()
 
-	api := r.Group("/api")
+	api := r.Group("/api/note")
 
-	api.POST("/note/create", h.CreateNote)
-	api.POST("/note/update", h.UpdateNote)
-	api.DELETE("/note/delete", h.DeleteNote)
-	api.GET("/note/getAll", h.GetAllNotes)
-	api.GET("/note/get", h.GetNote)
+	api.POST("/create", h.CreateNote)
+	api.POST("/update", h.UpdateNote)
+	api.DELETE("/delete", h.DeleteNote)
+	api.GET("/getAll", h.GetAllNotes)
+	api.GET("/get", h.GetNote)
 
 	return r
 }
