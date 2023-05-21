@@ -10,6 +10,7 @@ type Repository interface {
 	CreateNote(ctx context.Context, note model.Note) error
 	UpdateNote(ctx context.Context, note model.Note) error
 	DeleteNote(ctx context.Context, noteId int) error
+	GetAllNotes(ctx context.Context) ([]model.NoteInfo, error)
 }
 
 type Service struct {
@@ -32,4 +33,8 @@ func (s *Service) UpdateNote(ctx context.Context, note model.Note) error {
 
 func (s *Service) DeleteNote(ctx context.Context, noteId int) error {
 	return s.repo.DeleteNote(ctx, noteId)
+}
+
+func (s *Service) GetAllNotes(ctx context.Context) ([]model.NoteInfo, error) {
+	return s.repo.GetAllNotes(ctx)
 }

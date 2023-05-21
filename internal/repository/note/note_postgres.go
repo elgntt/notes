@@ -53,3 +53,27 @@ func (r *Repo) DeleteNote(ctx context.Context, noteId int) error {
 
 	return nil
 }
+
+func (r *Repo) GetAllNotes(ctx context.Context) ([]model.NoteInfo, error) {
+	rows, err := r.pool.Query(ctx,
+		` SELECT * FROM notes`)
+
+	if err != nil {
+		return nil, fmt.Errorf(`SQL: get all notes:%w`, err)
+	}
+
+	var notes []model.NoteInfo
+
+	for rows.Next() {
+		note := &model.NoteInfo{}
+
+		err := rows.Scan(&note.Id, &note.Text)
+		if err != nil {
+			return nil, fmt.Errorf(`SQL: get all notes:%w`, err)
+		}
+
+		notes = append(notes, *note)
+	}
+
+	return notes, nil
+}

@@ -12,6 +12,7 @@ type NoteService interface {
 	CreateNote(ctx context.Context, note model.Note) error
 	UpdateNote(ctx context.Context, note model.Note) error
 	DeleteNote(ctx context.Context, noteId int) error
+	GetAllNotes(ctx context.Context) ([]model.NoteInfo, error)
 }
 
 type Logger interface {
@@ -43,6 +44,7 @@ func New(noteService NoteService, logger Logger) *gin.Engine {
 	api.POST("/note/create", h.CreateNote)
 	api.POST("/note/update", h.UpdateNote)
 	api.DELETE("/note/delete", h.DeleteNote)
+	api.GET("/note/getAll", h.GetAllNotes)
 
 	return r
 }
