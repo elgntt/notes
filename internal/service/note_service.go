@@ -33,8 +33,17 @@ func (s *Service) CreateNote(ctx context.Context, note model.Note) error {
 	return s.repo.CreateNote(ctx, note)
 }
 
-func (s *Service) UpdateNote(ctx context.Context, note model.Note) error {
-	return s.repo.UpdateNote(ctx, note)
+func (s *Service) UpdateNote(ctx context.Context, data model.Note) error {
+	note, err := s.repo.GetNote(ctx, data.Id)
+	if err != nil {
+		return err
+	}
+
+	if note == nil {
+		return businessErr.NewBusinessError(noteNotExistsErr)
+	}
+	
+	return s.repo.UpdateNote(ctx, data)
 }
 
 func (s *Service) DeleteNote(ctx context.Context, noteId int) error {
