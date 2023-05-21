@@ -9,20 +9,22 @@ import (
 	response "github.com/elgntt/notes/internal/pkg/http"
 )
 
-func (h *Handler) DeleteNote(c *gin.Context) {
+func (h *Handler) GetNote(c *gin.Context) {
+	ctx := context.Background()
+
 	noteId, err := parseNoteId(c.Query("noteId"))
 	if err != nil {
 		response.WriteErrorResponse(c, h.logger, err)
 		return
 	}
 
-	ctx := context.Background()
-
-	err = h.noteService.DeleteNote(ctx, noteId)
+	note, err := h.noteService.GetNote(ctx, noteId)
 	if err != nil {
 		response.WriteErrorResponse(c, h.logger, err)
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{
+		"note": note,
+	})
 }

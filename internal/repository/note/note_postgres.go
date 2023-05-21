@@ -2,8 +2,10 @@ package note
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/elgntt/notes/internal/model"
@@ -76,4 +78,23 @@ func (r *Repo) GetAllNotes(ctx context.Context) ([]model.NoteInfo, error) {
 	}
 
 	return notes, nil
+}
+
+func (r *Repo) GetNote(ctx context.Context, noteId int) (*model.NoteInfo, error) {
+	row := r.pool.QueryRow(ctx,
+		` SELECT * 
+			FROM notes
+			WHERE id = $1`, noteId)
+
+	var note model.NoteInfo
+
+	err := row.Scan(&note.Id, &note.Text)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf(`SQL: get note:%w`, err)
+	}
+
+	return &note, nil
 }

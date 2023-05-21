@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/elgntt/notes/internal/model"
+	businessErr "github.com/elgntt/notes/internal/pkg/errors"
 )
 
 type Repository interface {
@@ -11,11 +12,16 @@ type Repository interface {
 	UpdateNote(ctx context.Context, note model.Note) error
 	DeleteNote(ctx context.Context, noteId int) error
 	GetAllNotes(ctx context.Context) ([]model.NoteInfo, error)
+	GetNote(ctx context.Context, noteId int) (*model.NoteInfo, error)
 }
 
 type Service struct {
 	repo Repository
 }
+
+const (
+	noteNotExistsErr = "Заметка не найдена"
+)
 
 func New(r Repository) *Service {
 	return &Service{
@@ -37,4 +43,16 @@ func (s *Service) DeleteNote(ctx context.Context, noteId int) error {
 
 func (s *Service) GetAllNotes(ctx context.Context) ([]model.NoteInfo, error) {
 	return s.repo.GetAllNotes(ctx)
+}
+
+func (s *Service) GetNote(ctx context.Context, noteId int) (model.NoteInfo, error) {
+	note, err := s.repo.GetNote(ctx, noteId)
+	if err != nil {
+		return model.NoteInfo{}, err
+	}
+	if note == nil {
+		return model.NoteInfo{}, businessErr.NewBusinessError(noteNotExistsErr)
+	}
+
+	return *note, nil
 }
