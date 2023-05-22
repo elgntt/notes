@@ -14,5 +14,12 @@ PGSSLMODE=disable
 PORT=:8080
 LOG_FILE_PATH=logs.log
 ```
+
+#### Установите зависимости для приложения:
+```bash
+go mod download
+```
+
+
 Также перед запуском нужно выполнить миграцию для таблицы с заметками.
 Можно использовать эту [библиотеку ](https://github.com/golang-migrate/migrate?ysclid=lhxtjgz16c765222512)(также доступна как docker-container).
