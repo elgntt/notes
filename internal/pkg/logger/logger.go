@@ -13,19 +13,19 @@ type Logger struct {
 }
 
 func New(logFilePath string) (*Logger, error) {
-	fileOpenFlags := os.O_APPEND | os.O_CREATE | os.O_WRONLY
+	openFlags := os.O_APPEND | os.O_CREATE | os.O_WRONLY
 
-	fileInfo, err := os.OpenFile(logFilePath, fileOpenFlags, 0666)
+	fileInfo, err := os.OpenFile(logFilePath, openFlags, 0666)
 	if err != nil {
 		return nil, err
 	}
 
-	fileWarn, err := os.OpenFile(logFilePath, fileOpenFlags, 0666)
+	fileWarn, err := os.OpenFile(logFilePath, openFlags, 0666)
 	if err != nil {
 		return nil, err
 	}
 
-	fileErr, err := os.OpenFile(logFilePath, fileOpenFlags, 0666)
+	fileErr, err := os.OpenFile(logFilePath, openFlags, 0666)
 	if err != nil {
 		return nil, err
 	}

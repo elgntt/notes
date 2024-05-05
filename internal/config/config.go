@@ -1,50 +1,40 @@
 package config
 
 import (
-	"log"
-	"os"
-	"strconv"
-
+	"fmt"
+	"github.com/caarlos0/env/v10"
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	PgUser     string
-	PgPassword string
-	PgHost     string
-	PgPort     uint16
-	PgDatabase string
-	PgSSLMode  string
-
-	LogFilePath string
-	ServerPort  string
+	DBConfig     DBConfig
+	ServerConfig ServerConfig
 }
 
-func GetConfig() (Config, error) {
-	PgPort, err := strconv.ParseInt(getKey("PGPORT"), 0, 16)
-	if err != nil {
-		return Config{}, err
-	}
-
-	return Config{
-		PgUser:     getKey("PGUSER"),
-		PgPassword: getKey("PGPASSWORD"),
-		PgHost:     getKey("PGHOST"),
-		PgPort:     uint16(PgPort),
-		PgDatabase: getKey("PGDATABASE"),
-		PgSSLMode:  getKey("PGSSLMODE"),
-
-		ServerPort:  getKey("PORT"),
-		LogFilePath: getKey("LOG_FILE_PATH"),
-	}, nil
+type ServerConfig struct {
+	ServerMode  string `env:"ENVIRONMENT" envDefault:"debug"`
+	ServerPort  string `env:"HTTP_PORT" envDefault:"8080"`
+	LogFilePath string `env:"LOG_FILE_PATH"`
 }
 
-func getKey(key string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Println("Error loading .env file")
-		return ""
+type DBConfig struct {
+	PgUser     string `env:"PGUSER"`
+	PgPassword string `env:"PGPASSWORD"`
+	PgHost     string `env:"PGHOST"`
+	PgPort     uint16 `env:"PGPORT"`
+	PgDatabase string `env:"PGDATABASE"`
+	PgSSLMode  string `env:"PGSSLMODE"`
+}
+
+func NewConfig() (*Config, error) {
+	if err := godotenv.Load(); err != nil {
+		return nil, fmt.Errorf("failed to load .env file: %w", err)
+	}
+	cfg := &Config{}
+
+	if err := env.Parse(cfg); err != nil {
+		return nil, fmt.Errorf("failed to parse config from environment variables: %w", err)
 	}
 
-	return os.Getenv(key)
+	return cfg, nil
 }
